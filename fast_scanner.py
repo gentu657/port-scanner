@@ -1,4 +1,4 @@
-# fast_scanner.py
+
 import socket
 import ipaddress
 import time
@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 init(autoreset=True)
 
-# --- קונפיגורציה ---
+
 IP_RANGES = [
     "192.168.1.0/24"
 ]
@@ -61,7 +61,7 @@ def scan_range(ip_range):
         nonlocal buffer_lines, last_flush
         if not buffer_lines:
             return
-        # הדפסה מקובצת למסך (עם צבעים קטנים)
+        
         out_lines = []
         for ip, port, ok in buffer_lines:
             if ok:
@@ -70,7 +70,7 @@ def scan_range(ip_range):
                 out_lines.append(f"testing {ip}:{port} -> closed\n")
         sys.stdout.write("".join(out_lines))
         sys.stdout.flush()
-        # כתיבה לקובץ attempts.txt (הגרסה הפשוטה)
+       
         for ip, port, ok in buffer_lines:
             status = "open" if ok else "closed"
             attempts_file.write(f"{ip}:{port} {status}\n")
@@ -78,7 +78,7 @@ def scan_range(ip_range):
         buffer_lines = []
         last_flush = time.time()
 
-    # worker wrapper
+    
     def check_pair(ip, port):
         ok = check_port(ip, port)
         return (str(ip), port, ok)
@@ -90,12 +90,12 @@ def scan_range(ip_range):
             try:
                 ip, port, ok = fut.result()
             except Exception:
-                # במקרה של שגיאה, סמן סגור והמשך
+                
                 ip, port, ok = (futures.get(fut)[0], futures.get(fut)[1], False)
 
             processed += 1
 
-            # הוספה ל-buffer (יוצג ונכתב ב-batches)
+            )
             buffer_lines.append((ip, port, ok))
 
             # שמירה של פתוחים ברשימת התוצאות
@@ -103,12 +103,12 @@ def scan_range(ip_range):
                 print(Fore.GREEN + f"{ip}:{port} open")
                 open_ips.append((ip, port))
 
-            # תנאי flush: גודל או מרווח זמן
+            
             now = time.time()
             if len(buffer_lines) >= BATCH_PRINT_SIZE or (now - last_flush) >= BATCH_PRINT_INTERVAL:
                 flush_buffer()
 
-            # הדפסת פרוגרס קל מדי פעם
+            
             if processed % 500 == 0 or processed == total_tasks:
                 elapsed = now - start_time
                 rate = processed / elapsed if elapsed > 0 else 0
@@ -151,3 +151,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
