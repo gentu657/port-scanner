@@ -95,7 +95,7 @@ def scan_range(ip_range):
 
             processed += 1
 
-            )
+            
             buffer_lines.append((ip, port, ok))
 
             # שמירה של פתוחים ברשימת התוצאות
@@ -151,4 +151,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
